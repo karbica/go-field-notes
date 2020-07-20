@@ -1,6 +1,6 @@
 package queues
 
-// Queue interface implements queue behaviour.
+// Queue implements the behaviour of a queue.
 type Queue interface {
 	Len() int
 	Empty() bool

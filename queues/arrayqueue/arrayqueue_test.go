@@ -18,13 +18,15 @@ func TestLen(t *testing.T) {
 	}
 
 	if queue.Len() != 0 {
-		t.Errorf("TestLen received: %v, expected: %v", queue.Len(), 0)
+		t.Errorf("TestLen got: %v, want: %v", queue.Len(), 0)
 	}
 
 	for _, test := range tests {
 		queue.Enqueue(test[0])
-		if received := queue.Len(); received != test[1] {
-			t.Errorf("TestLen received: %v, expected: %v", queue.Len(), test[1])
+		got := queue.Len()
+		want := test[1]
+		if got != want {
+			t.Errorf("TestLen got: %v, want: %v", got, want)
 		}
 	}
 }
@@ -94,10 +96,12 @@ func TestEnqueue(t *testing.T) {
 		{"g"},
 	}
 
-	for _, test := range tests {
+	for i, test := range tests {
 		queue.Enqueue(test[0])
-		if received := queue.items[len(queue.items)-1]; received != test[0] {
-			t.Errorf("TestEnqueue received: %v, expected: %v", received, test[0])
+		got, _ := queue.items.Get(i)
+		want := test[0]
+		if got != want {
+			t.Errorf("TestEnqueue got: %v, want: %v", got, want)
 		}
 	}
 }

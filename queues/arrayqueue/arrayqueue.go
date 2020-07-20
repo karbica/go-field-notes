@@ -2,29 +2,28 @@ package arrayqueue
 
 import (
 	"errors"
-	"sync"
+
+	list "github.com/karbica/go-field-notes/lists/arraylist"
 )
 
 // Queue controls the state of values in a FIFO manner.
 type Queue struct {
-	items []interface{}
-	lock  sync.Mutex
+	items *list.List
+}
+
+// New returns a new instance of a queue.
+func New() *Queue {
+	return &Queue{items: list.New()}
 }
 
 // Len returns the number of items in the queue.
 func (q *Queue) Len() int {
-	q.lock.Lock()
-	defer q.lock.Unlock()
-
-	return len(q.items)
+	return q.items.Len()
 }
 
 // Empty indicates whether or not the queue is empty.
 func (q *Queue) Empty() bool {
-	q.lock.Lock()
-	defer q.lock.Unlock()
-
-	return len(q.items) == 0
+	return q.items.Empty()
 }
 
 // Peek returns the item at the front without removing it.
@@ -33,20 +32,12 @@ func (q *Queue) Peek() (interface{}, error) {
 		return nil, errors.New("queue error: cannot peek empty queue")
 	}
 
-	q.lock.Lock()
-	defer q.lock.Unlock()
-
-	return q.items[0], nil
+	return q.items.Get(0)
 }
 
 // Enqueue adds items to the end of the queue.
-func (q *Queue) Enqueue(items ...interface{}) error {
-	q.lock.Lock()
-	defer q.lock.Unlock()
-
-	q.items = append(q.items, items...)
-
-	return nil
+func (q *Queue) Enqueue(items ...interface{}) int {
+	return q.items.Push(items...)
 }
 
 // Dequeue removes an item from the front of the queue.
@@ -55,16 +46,5 @@ func (q *Queue) Dequeue() (interface{}, error) {
 		return nil, errors.New("queue error: cannot dequeue from empty queue")
 	}
 
-	q.lock.Lock()
-	defer q.lock.Unlock()
-
-	item := q.items[0]
-	q.items = q.items[1:]
-
-	return item, nil
-}
-
-// New returns a new instance of a queue.
-func New() *Queue {
-	return &Queue{items: make([]interface{}, 0)}
+	return q.items.Shift()
 }
