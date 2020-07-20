@@ -2,37 +2,40 @@ package arraylist
 
 import (
 	"errors"
-	"sync"
 )
 
 // List holds ordered elements in a slice.
 type List struct {
 	elements []interface{}
 	length   int
-	lock     sync.Mutex
+}
+
+// New returns a new instance of a list.
+func New() *List {
+	return &List{elements: make([]interface{}, 0), length: 0}
 }
 
 // Len returns the length of the list.
 func (l *List) Len() int {
-	l.lock.Lock()
-	defer l.lock.Unlock()
-
 	return len(l.elements)
 }
 
 // Empty indicates whether or not the list is empty.
 func (l *List) Empty() bool {
-	l.lock.Lock()
-	defer l.lock.Unlock()
-
 	return len(l.elements) == 0
+}
+
+// Get returns an element at a given index within range.
+func (l *List) Get(index int) (interface{}, error) {
+	if !l.withinRange(index) {
+		return nil, errors.New("arraylist error: given index out of list range")
+	}
+
+	return l.elements[index], nil
 }
 
 // Push adds elements to the end of the list and returns the new length.
 func (l *List) Push(elements ...interface{}) int {
-	l.lock.Lock()
-	defer l.lock.Unlock()
-
 	l.elements = append(l.elements, elements...)
 	l.length += len(elements)
 
@@ -45,9 +48,6 @@ func (l *List) Pop() (interface{}, error) {
 	if l.Empty() {
 		return nil, errors.New("arraylist error: cannot pop from empty list")
 	}
-
-	l.lock.Lock()
-	defer l.lock.Unlock()
 
 	end := l.length - 1
 	element := l.elements[end]
@@ -64,9 +64,6 @@ func (l *List) Shift() (interface{}, error) {
 		return nil, errors.New("arraylist error: cannot shift from empty list")
 	}
 
-	l.lock.Lock()
-	defer l.lock.Unlock()
-
 	element := l.elements[0]
 	l.elements = l.elements[1:]
 	l.length--
@@ -76,9 +73,6 @@ func (l *List) Shift() (interface{}, error) {
 
 // Unshift adds elements to the front of the list and returns the new length.
 func (l *List) Unshift(elements ...interface{}) int {
-	l.lock.Lock()
-	defer l.lock.Unlock()
-
 	front := append(make([]interface{}, len(elements)), elements...)
 	l.elements = append(front, l.elements...)
 	l.length += len(elements)
@@ -86,7 +80,11 @@ func (l *List) Unshift(elements ...interface{}) int {
 	return l.length
 }
 
-// New returns a new instance of a list.
-func New() *List {
-	return &List{elements: make([]interface{}, 0), length: 0}
+// Check if the given index is within range of the list.
+func (l *List) withinRange(index int) bool {
+	if index < 0 || index > l.Len()-1 {
+		return false
+	}
+
+	return true
 }

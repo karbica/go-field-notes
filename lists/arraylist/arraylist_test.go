@@ -47,6 +47,32 @@ func TestEmpty(t *testing.T) {
 	}
 }
 
+func TestGet(t *testing.T) {
+	list := New()
+
+	tests := [][]interface{}{
+		{"a"},
+		{"b"},
+		{"c"},
+		{"d"},
+		{"e"},
+		{"f"},
+		{"g"},
+	}
+
+	for _, test := range tests {
+		list.Push(test[0])
+	}
+
+	for i, test := range tests {
+		got, _ := list.Get(i)
+		want := test[0]
+		if got != want {
+			t.Errorf("TestGet got: %v, want: %v", got, want)
+		}
+	}
+}
+
 func TestPush(t *testing.T) {
 	list := New()
 
