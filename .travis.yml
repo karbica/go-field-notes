@@ -7,7 +7,5 @@ go:
 os:
     - linux
     - osx
-sudo: false
-install: false
 script:
     - go test ./lists/... ./maps/... ./queues/... ./stacks/...
