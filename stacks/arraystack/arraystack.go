@@ -17,27 +17,27 @@ func New() *Stack {
 }
 
 // Len returns the number of items in the stack.
-func (s *Stack) Len() int {
+func (s *Stack) Len() (length int) {
 	return s.items.Len()
 }
 
 // Empty indicates whether or not the stack is empty.
-func (s *Stack) Empty() bool {
+func (s *Stack) Empty() (empty bool) {
 	return s.items.Empty()
 }
 
 // Peek returns the item at the top without removing it.
-func (s *Stack) Peek() (interface{}, error) {
-	return s.items.Get(0)
+func (s *Stack) Peek() (top interface{}, ok error) {
+	return s.items.Get(s.Len() - 1)
 }
 
 // Push adds items to the top of the stack.
-func (s *Stack) Push(items ...interface{}) int {
+func (s *Stack) Push(items ...interface{}) (length int) {
 	return s.items.Push(items...)
 }
 
 // Pop removes an item from the top of the stack.
-func (s *Stack) Pop() (interface{}, error) {
+func (s *Stack) Pop() (item interface{}, ok error) {
 	if s.items.Empty() {
 		return nil, errors.New("stack error: cannot pop from empty stack")
 	}

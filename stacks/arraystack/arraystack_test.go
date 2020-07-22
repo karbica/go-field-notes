@@ -56,6 +56,21 @@ func TestEmpty(t *testing.T) {
 	}
 }
 
+func TestPeek(t *testing.T) {
+	stack := New()
+
+	tests := []rune{'a', 'b', 'c', 'd', 'e', 'f', 'g'}
+
+	for _, test := range tests {
+		stack.Push(test)
+		got, _ := stack.Peek()
+		want := test
+		if got != want {
+			t.Errorf("TestPeek got: %v, want: %v", got, want)
+		}
+	}
+}
+
 func TestPush(t *testing.T) {
 	stack := New()
 
@@ -86,6 +101,15 @@ func TestPop(t *testing.T) {
 	for i := range tests {
 		got, _ := stack.Pop()
 		want := tests[len(tests)-i-1]
+		if got != want {
+			t.Errorf("TestPop got: %v, want: %v", got, want)
+		}
+	}
+
+	for range tests {
+		_, err := stack.Pop()
+		got := err == nil
+		want := false
 		if got != want {
 			t.Errorf("TestPop got: %v, want: %v", got, want)
 		}
