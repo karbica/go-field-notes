@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-// List holds ordered elements in a slice.
+// List holds the state of the list instance.
 type List struct {
 	elements []interface{}
 	length   int
@@ -16,17 +16,17 @@ func New() *List {
 }
 
 // Len returns the length of the list.
-func (l *List) Len() int {
+func (l *List) Len() (length int) {
 	return len(l.elements)
 }
 
 // Empty indicates whether or not the list is empty.
-func (l *List) Empty() bool {
+func (l *List) Empty() (empty bool) {
 	return len(l.elements) == 0
 }
 
 // Get returns an element at a given index within range.
-func (l *List) Get(index int) (interface{}, error) {
+func (l *List) Get(index int) (element interface{}, ok error) {
 	if !l.withinRange(index) {
 		return nil, errors.New("arraylist error: given index out of list range")
 	}
@@ -35,7 +35,7 @@ func (l *List) Get(index int) (interface{}, error) {
 }
 
 // Push adds elements to the end of the list and returns the new length.
-func (l *List) Push(elements ...interface{}) int {
+func (l *List) Push(elements ...interface{}) (length int) {
 	l.elements = append(l.elements, elements...)
 	l.length += len(elements)
 
@@ -44,13 +44,13 @@ func (l *List) Push(elements ...interface{}) int {
 
 // Pop removes the last element from the list and returns it.
 // If there are no elements, an error is returned.
-func (l *List) Pop() (interface{}, error) {
+func (l *List) Pop() (element interface{}, ok error) {
 	if l.Empty() {
 		return nil, errors.New("arraylist error: cannot pop from empty list")
 	}
 
 	end := l.length - 1
-	element := l.elements[end]
+	element = l.elements[end]
 	l.elements = l.elements[:end]
 	l.length--
 
@@ -59,12 +59,12 @@ func (l *List) Pop() (interface{}, error) {
 
 // Shift removes the first element from the list and returns it.
 // If there are no elements, an error is returned.
-func (l *List) Shift() (interface{}, error) {
+func (l *List) Shift() (element interface{}, ok error) {
 	if l.Empty() {
 		return nil, errors.New("arraylist error: cannot shift from empty list")
 	}
 
-	element := l.elements[0]
+	element = l.elements[0]
 	l.elements = l.elements[1:]
 	l.length--
 
@@ -72,7 +72,7 @@ func (l *List) Shift() (interface{}, error) {
 }
 
 // Unshift adds elements to the front of the list and returns the new length.
-func (l *List) Unshift(elements ...interface{}) int {
+func (l *List) Unshift(elements ...interface{}) (length int) {
 	front := append(make([]interface{}, len(elements)), elements...)
 	l.elements = append(front, l.elements...)
 	l.length += len(elements)
@@ -81,7 +81,7 @@ func (l *List) Unshift(elements ...interface{}) int {
 }
 
 // Check if the given index is within range of the list.
-func (l *List) withinRange(index int) bool {
+func (l *List) withinRange(index int) (ok bool) {
 	if index < 0 || index > l.Len()-1 {
 		return false
 	}

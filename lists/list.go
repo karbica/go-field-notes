@@ -2,11 +2,11 @@ package lists
 
 // List implements the behaviour of a list.
 type List interface {
-	Len() int
-	Empty() bool
-	Get(int) (interface{}, error)
-	Push(...interface{}) int
-	Pop() (interface{}, error)
-	Shift() (interface{}, error)
-	Unshift(...interface{}) int
+	Len() (length int)
+	Empty() (empty bool)
+	Get(int) (element interface{}, ok error)
+	Push(...interface{}) (length int)
+	Pop() (element interface{}, ok error)
+	Shift() (element interface{}, ok error)
+	Unshift(...interface{}) (length int)
 }
