@@ -6,7 +6,7 @@ import (
 	list "github.com/karbica/go-field-notes/lists/arraylist"
 )
 
-// Queue controls the state of values in a FIFO manner.
+// Queue controls the state of the stack instance.
 type Queue struct {
 	items *list.List
 }
