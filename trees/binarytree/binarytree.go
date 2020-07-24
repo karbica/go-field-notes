@@ -1,8 +1,6 @@
 package binarytree
 
 import (
-	"errors"
-
 	queue "github.com/karbica/go-field-notes/queues/arrayqueue"
 )
 
@@ -15,28 +13,30 @@ type Tree struct {
 }
 
 // Insert adds a node to the left or right in level order.
-func (t *Tree) Insert(key int, value interface{}) (node *Tree, err error) {
-	queue := queue.New()
-	queue.Enqueue(t)
+func (t *Tree) Insert(key int, value interface{}) (node *Tree) {
+	q := queue.New()
+	q.Enqueue(t)
 
-	for !queue.Empty() {
-		_node, _ := queue.Dequeue()
-		node := _node.(*Tree)
+	for !q.Empty() {
+		_n, _ := q.Dequeue()
+		n := _n.(*Tree)
 
-		if node.Left == nil {
-			node.Left = New(key, value)
-			return node.Left, nil
+		if n.Left == nil {
+			n.Left = New(key, value)
+			node = n.Left
+			break
 		}
 
-		if node.Right == nil {
-			node.Right = New(key, value)
-			return node.Right, nil
+		if n.Right == nil {
+			n.Right = New(key, value)
+			node = n.Right
+			break
 		}
 
-		queue.Enqueue(node.Left, node.Right)
+		q.Enqueue(n.Left, n.Right)
 	}
 
-	return nil, errors.New("btree error: could not insert new node")
+	return node
 }
 
 // Remove finds and removes the node given the key. The remove strategy finds
