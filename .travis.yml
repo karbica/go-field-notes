@@ -10,6 +10,6 @@ before_script:
 os:
     - linux
 script:
-    - go test -coverprofile c.out ./lists/... ./maps/... ./queues/... ./stacks/...
+    - go test -coverprofile c.out ./lists/... ./maps/... ./queues/... ./stacks/... ./trees/...
 after_script:
     - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
