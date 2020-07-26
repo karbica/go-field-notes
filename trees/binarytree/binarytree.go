@@ -4,31 +4,49 @@ import (
 	queue "github.com/karbica/go-field-notes/queues/arrayqueue"
 )
 
-// Tree holds a key, value, and pointers to other nodes.
+// Tree holds the state of a tree.
 type Tree struct {
+	Root *Node
+	size int
+}
+
+// Node holds the state of a node.
+type Node struct {
 	Key   int
 	Value interface{}
-	Left  *Tree
-	Right *Tree
+	Left  *Node
+	Right *Node
+}
+
+// NewTree returns a new instance of a tree.
+func NewTree(key int, value interface{}) (tree *Tree) {
+	root := NewNode(key, value)
+	return &Tree{Root: root, size: 1}
+}
+
+// NewNode returns a new instance of a node.
+func NewNode(key int, value interface{}) (node *Node) {
+	return &Node{Key: key, Value: value, Left: nil, Right: nil}
 }
 
 // Insert adds a node to the left or right in level order.
-func (t *Tree) Insert(key int, value interface{}) (node *Tree) {
+// The newly inserted node is then returned.
+func (t *Tree) Insert(key int, value interface{}) (node *Node) {
 	q := queue.New()
-	q.Enqueue(t)
+	q.Enqueue(t.Root)
 
 	for !q.Empty() {
 		_n, _ := q.Dequeue()
-		n := _n.(*Tree)
+		n := _n.(*Node)
 
 		if n.Left == nil {
-			n.Left = New(key, value)
+			n.Left = NewNode(key, value)
 			node = n.Left
 			break
 		}
 
 		if n.Right == nil {
-			n.Right = New(key, value)
+			n.Right = NewNode(key, value)
 			node = n.Right
 			break
 		}
@@ -36,24 +54,26 @@ func (t *Tree) Insert(key int, value interface{}) (node *Tree) {
 		q.Enqueue(n.Left, n.Right)
 	}
 
+	t.size++
 	return node
 }
 
 // Remove finds and removes the node given the key. The remove strategy finds
 // the deepest node (rightmost) and replaces the node to remove with it.
-func (t *Tree) Remove(key int) (node *Tree) {
+func (t *Tree) Remove(key int) {
+	root := t.Root
 	queue := queue.New()
-	queue.Enqueue(t)
-	var marked *Tree
-	var deep *Tree
+	queue.Enqueue(root)
+	var marked *Node
+	var deep *Node
 
-	if key == t.Key && t.Left == nil && t.Right == nil {
-		return nil
+	if key == root.Key && root.Left == nil && root.Right == nil {
+		t.Root = nil
 	}
 
 	for !queue.Empty() {
 		_node, _ := queue.Dequeue()
-		node := _node.(*Tree)
+		node := _node.(*Node)
 
 		if node != nil {
 			if key == node.Key {
@@ -67,18 +87,17 @@ func (t *Tree) Remove(key int) (node *Tree) {
 	marked.Key = deep.Key
 	marked.Value = deep.Value
 	t.removeDeep(deep)
-
-	return t
+	t.size--
 }
 
 // Levelorder traverses those nodes from the top down, left to right.
-func (*Tree) Levelorder(t *Tree, fn func(*Tree)) {
+func (*Tree) Levelorder(t *Tree, fn func(*Node)) {
 	queue := queue.New()
 	queue.Enqueue(t)
 
 	for !queue.Empty() {
 		_node, _ := queue.Dequeue()
-		node := _node.(*Tree)
+		node := _node.(*Node)
 
 		fn(node)
 
@@ -94,42 +113,42 @@ func (*Tree) Levelorder(t *Tree, fn func(*Tree)) {
 
 // Inorder traverses the nodes from left, root, right. The provided
 // callback is invoked at every node.
-func (*Tree) Inorder(node *Tree, fn func(*Tree)) {
+func (t *Tree) Inorder(node *Node, fn func(*Node)) {
 	if node != nil {
-		node.Inorder(node.Left, fn)
+		t.Inorder(node.Left, fn)
 		fn(node)
-		node.Inorder(node.Right, fn)
+		t.Inorder(node.Right, fn)
 	}
 }
 
 // Preorder traverses the nodes from root, left, right. The provided
 // callback is invoked at every node.
-func (*Tree) Preorder(node *Tree, fn func(*Tree)) {
+func (t *Tree) Preorder(node *Node, fn func(*Node)) {
 	if node != nil {
 		fn(node)
-		node.Preorder(node.Left, fn)
-		node.Preorder(node.Right, fn)
+		t.Preorder(node.Left, fn)
+		t.Preorder(node.Right, fn)
 	}
 }
 
 // Postorder traverses the nodes from left, right, root. The provided
 // callback is invoked at every node.
-func (*Tree) Postorder(node *Tree, fn func(*Tree)) {
+func (t *Tree) Postorder(node *Node, fn func(*Node)) {
 	if node != nil {
-		node.Postorder(node.Left, fn)
-		node.Postorder(node.Right, fn)
+		t.Postorder(node.Left, fn)
+		t.Postorder(node.Right, fn)
 		fn(node)
 	}
 }
 
 // Remove the deepest (rightmost) node in the binary tree.
-func (t *Tree) removeDeep(deep *Tree) {
+func (t *Tree) removeDeep(deep *Node) {
 	queue := queue.New()
-	queue.Enqueue(t)
+	queue.Enqueue(t.Root)
 
 	for !queue.Empty() {
 		_node, _ := queue.Dequeue()
-		node := _node.(*Tree)
+		node := _node.(*Node)
 
 		if node.Left != nil {
 			if node.Left == deep {
@@ -147,9 +166,4 @@ func (t *Tree) removeDeep(deep *Tree) {
 			queue.Enqueue(node.Right)
 		}
 	}
-}
-
-// New returns a new instance of the root node in a tree.
-func New(key int, value interface{}) *Tree {
-	return &Tree{Key: key, Value: value, Left: nil, Right: nil}
 }
