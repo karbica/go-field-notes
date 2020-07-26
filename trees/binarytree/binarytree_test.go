@@ -30,3 +30,30 @@ func TestInsert(t *testing.T) {
 		t.Errorf("TreeInsert got: %v, want: %v", got, want)
 	}
 }
+
+func TestRemove(t *testing.T) {
+	tree := NewTree(0, 'a')
+	root := tree.Root
+
+	tests := []rune{'b', 'c', 'd', 'e', 'f', 'g'}
+
+	for i, test := range tests {
+		tree.Insert(i+1, test)
+	}
+
+	tree.Remove(2)
+	if got, want := root.Right.Key, 6; got != want {
+		t.Errorf("TreeRemove got: %v, want: %v", got, want)
+	}
+
+	tree.Remove(1)
+	if got, want := root.Left.Key, 5; got != want {
+		t.Errorf("TreeRemove got: %v, want: %v", got, want)
+	}
+
+	tree = NewTree(0, 'a')
+	tree.Remove(0)
+	if got := tree.Root; got != nil {
+		t.Errorf("TreeRemove got: %v, want: %v", got, nil)
+	}
+}

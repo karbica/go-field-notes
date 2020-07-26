@@ -62,14 +62,16 @@ func (t *Tree) Insert(key int, value interface{}) (node *Node) {
 // the deepest node (rightmost) and replaces the node to remove with it.
 func (t *Tree) Remove(key int) {
 	root := t.Root
-	queue := queue.New()
-	queue.Enqueue(root)
-	var marked *Node
-	var deep *Node
 
 	if key == root.Key && root.Left == nil && root.Right == nil {
 		t.Root = nil
+		return
 	}
+
+	var marked *Node
+	var deep *Node
+	queue := queue.New()
+	queue.Enqueue(root)
 
 	for !queue.Empty() {
 		_node, _ := queue.Dequeue()
