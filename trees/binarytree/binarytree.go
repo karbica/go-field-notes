@@ -6,7 +6,7 @@ import (
 
 // Tree holds the state of a tree.
 type Tree struct {
-	Root *Node
+	root *Node
 	size int
 }
 
@@ -19,9 +19,8 @@ type Node struct {
 }
 
 // NewTree returns a new instance of a tree.
-func NewTree(key int, value interface{}) (tree *Tree) {
-	root := NewNode(key, value)
-	return &Tree{Root: root, size: 1}
+func NewTree() (tree *Tree) {
+	return &Tree{root: nil, size: 0}
 }
 
 // NewNode returns a new instance of a node.
@@ -29,16 +28,22 @@ func NewNode(key int, value interface{}) (node *Node) {
 	return &Node{Key: key, Value: value, Left: nil, Right: nil}
 }
 
+// Root returns the root node of the tree.
+func (t *Tree) Root() (root *Node) {
+	return t.root
+}
+
 // Insert adds a node to the left or right in level order.
 // The newly inserted node is then returned.
 func (t *Tree) Insert(key int, value interface{}) (node *Node) {
-	if t.Root == nil {
-		t.Root = NewNode(key, value)
-		return t.Root
+	if t.Empty() {
+		t.root = NewNode(key, value)
+		t.size++
+		return t.root
 	}
 
 	q := queue.New()
-	q.Enqueue(t.Root)
+	q.Enqueue(t.root)
 
 	for !q.Empty() {
 		_n, _ := q.Dequeue()
@@ -66,17 +71,16 @@ func (t *Tree) Insert(key int, value interface{}) (node *Node) {
 // Remove finds and removes the node given the key. The remove strategy finds
 // the deepest node (rightmost) and replaces the node to remove with it.
 func (t *Tree) Remove(key int) {
-	root := t.Root
-
-	if key == root.Key && root.Left == nil && root.Right == nil {
-		t.Root = nil
+	if t.Size() == 1 {
+		t.root = nil
+		t.size--
 		return
 	}
 
 	var marked *Node
 	var deep *Node
 	queue := queue.New()
-	queue.Enqueue(root)
+	queue.Enqueue(t.root)
 
 	for !queue.Empty() {
 		_node, _ := queue.Dequeue()
@@ -148,10 +152,26 @@ func (t *Tree) Postorder(node *Node, fn func(*Node)) {
 	}
 }
 
+// Size returns the quantity of nodes in the tree.
+func (t *Tree) Size() (size int) {
+	return t.size
+}
+
+// Empty indicates whether or not there are nodes in the tree.
+func (t *Tree) Empty() (empty bool) {
+	return t.size == 0
+}
+
+// Clear empties the tree.
+func (t *Tree) Clear() {
+	t.root = nil
+	t.size = 0
+}
+
 // Remove the deepest (rightmost) node in the binary tree.
 func (t *Tree) removeDeep(deep *Node) {
 	queue := queue.New()
-	queue.Enqueue(t.Root)
+	queue.Enqueue(t.root)
 
 	for !queue.Empty() {
 		_node, _ := queue.Dequeue()
