@@ -32,6 +32,11 @@ func NewNode(key int, value interface{}) (node *Node) {
 // Insert adds a node to the left or right in level order.
 // The newly inserted node is then returned.
 func (t *Tree) Insert(key int, value interface{}) (node *Node) {
+	if t.Root == nil {
+		t.Root = NewNode(key, value)
+		return t.Root
+	}
+
 	q := queue.New()
 	q.Enqueue(t.Root)
 
