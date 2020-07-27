@@ -29,6 +29,13 @@ func TestInsert(t *testing.T) {
 	if got, want := root.Left.Right.Key, 4; got != want {
 		t.Errorf("TreeInsert got: %v, want: %v", got, want)
 	}
+
+	tree = NewTree(0, 'a')
+	tree.Remove(0)
+	tree.Insert(1, 'b')
+	if got, want := root.Key, 1; got != want {
+		t.Errorf("TestInsert got: %v, want: %v", got, want)
+	}
 }
 
 func TestRemove(t *testing.T) {
