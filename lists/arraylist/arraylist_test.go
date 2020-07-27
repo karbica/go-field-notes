@@ -71,6 +71,15 @@ func TestGet(t *testing.T) {
 			t.Errorf("TestGet got: %v, want: %v", got, want)
 		}
 	}
+
+	for range tests {
+		_, err := list.Get(len(tests))
+		got := err != nil
+		want := true
+		if got != want {
+			t.Errorf("TestGet got: %v, want: %v", got, want)
+		}
+	}
 }
 
 func TestPush(t *testing.T) {
@@ -120,6 +129,16 @@ func TestPop(t *testing.T) {
 			t.Errorf("TestPop got: %v, want: %v", got, want)
 		}
 	}
+
+	list = New()
+	for range tests {
+		_, err := list.Pop()
+		got := err != nil
+		want := true
+		if got != want {
+			t.Errorf("TestGet got: %v, want: %v", got, want)
+		}
+	}
 }
 
 func TestShift(t *testing.T) {
@@ -144,6 +163,58 @@ func TestShift(t *testing.T) {
 		want := test[0]
 		if got != want {
 			t.Errorf("TestShift got: %v, want: %v", got, want)
+		}
+	}
+
+	list = New()
+	for range tests {
+		_, err := list.Shift()
+		got := err != nil
+		want := true
+		if got != want {
+			t.Errorf("TestGet got: %v, want: %v", got, want)
+		}
+	}
+}
+
+func TestUnshift(t *testing.T) {
+	list := New()
+
+	tests := []rune{'a', 'b', 'c', 'd', 'e', 'f', 'g'}
+
+	for _, test := range tests {
+		list.Unshift(test)
+		got, _ := list.Get(0)
+		want := test
+		if got != want {
+			t.Errorf("TestUnshift got: %v, want: %v", got, want)
+		}
+	}
+}
+
+func TestWithinRange(t *testing.T) {
+	list := New()
+
+	tests := []rune{'a', 'b', 'c', 'd', 'e', 'f', 'g'}
+
+	for i, test := range tests {
+		list.Push(test)
+		if got, want := list.withinRange(i), true; got != want {
+			t.Errorf("TestWithinRange got: %v, want: %v", got, want)
+		}
+	}
+
+	for i, test := range tests {
+		list.Push(test)
+		if got, want := list.withinRange(i+10), false; got != want {
+			t.Errorf("TestWithinRange got: %v, want: %v", got, want)
+		}
+	}
+
+	for i, test := range tests {
+		list.Push(test)
+		if got, want := list.withinRange(i+10*-1), false; got != want {
+			t.Errorf("TestWithinRange got: %v, want: %v", got, want)
 		}
 	}
 }

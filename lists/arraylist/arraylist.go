@@ -73,7 +73,14 @@ func (l *List) Shift() (element interface{}, ok error) {
 
 // Unshift adds elements to the front of the list and returns the new length.
 func (l *List) Unshift(elements ...interface{}) (length int) {
-	front := append(make([]interface{}, len(elements)), elements...)
+	front := make([]interface{}, len(elements))
+	i := 0
+
+	for _, element := range elements {
+		front[i] = element
+		i++
+	}
+
 	l.elements = append(front, l.elements...)
 	l.length += len(elements)
 
