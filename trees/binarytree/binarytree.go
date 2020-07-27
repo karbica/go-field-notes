@@ -98,9 +98,9 @@ func (t *Tree) Remove(key int) {
 }
 
 // Levelorder traverses those nodes from the top down, left to right.
-func (*Tree) Levelorder(t *Tree, fn func(*Node)) {
+func (*Tree) Levelorder(n *Node, fn func(*Node)) {
 	queue := queue.New()
-	queue.Enqueue(t)
+	queue.Enqueue(n)
 
 	for !queue.Empty() {
 		_node, _ := queue.Dequeue()

@@ -33,7 +33,7 @@ func TestInsert(t *testing.T) {
 	tree = NewTree(0, 'a')
 	tree.Remove(0)
 	tree.Insert(1, 'b')
-	if got, want := root.Key, 1; got != want {
+	if got, want := tree.Root.Key, 1; got != want {
 		t.Errorf("TestInsert got: %v, want: %v", got, want)
 	}
 }
@@ -62,5 +62,29 @@ func TestRemove(t *testing.T) {
 	tree.Remove(0)
 	if got := tree.Root; got != nil {
 		t.Errorf("TreeRemove got: %v, want: %v", got, nil)
+	}
+}
+
+func TestLevelorder(t *testing.T) {
+	tree := NewTree(0, 'a')
+	tests := []rune{'b', 'c', 'd', 'e', 'f', 'g'}
+	output := []rune{}
+	want := append([]rune{tree.Root.Value.(rune)}, tests...)
+
+	for i, test := range tests {
+		tree.Insert(i, test)
+	}
+
+	fn := func(n *Node) {
+		v := n.Value.(rune)
+		output = append(output, v)
+	}
+
+	tree.Levelorder(tree.Root, fn)
+
+	for i, got := range output {
+		if got != want[i] {
+			t.Errorf("TestLevelorder got: %v, want: %v", got, want)
+		}
 	}
 }
