@@ -1,6 +1,6 @@
 package maps
 
-// Map implements the behaviour of a map.
+// Map implements the behavior of a map.
 type Map interface {
 	Size() (size int)
 	Empty() (empty bool)

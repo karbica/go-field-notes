@@ -1,6 +1,6 @@
 package stacks
 
-// Stack implements the behaviour of a stack.
+// Stack implements the behavior of a stack.
 type Stack interface {
 	Len() (length int)
 	Empty() (empty bool)

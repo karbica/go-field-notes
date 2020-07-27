@@ -1,6 +1,6 @@
 package lists
 
-// List implements the behaviour of a list.
+// List implements the behavior of a list.
 type List interface {
 	Len() (length int)
 	Empty() (empty bool)

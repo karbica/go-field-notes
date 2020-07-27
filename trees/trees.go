@@ -1,6 +1,6 @@
 package trees
 
-// Tree implements the behaviour of a tree.
+// Tree implements the behavior of a tree.
 type Tree interface {
 	Size() (size int)
 	Empty() (empty bool)
